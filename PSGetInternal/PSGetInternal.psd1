@@ -95,10 +95,10 @@
             # Tags = @()
 
             # A URL to the license for this module.
-            # LicenseUri = ''
+            LicenseUri = 'https://github.com/Passy121/PSGetInternal/blob/main/LICENSE'
 
             # A URL to the main website for this project.
-            # ProjectUri = ''
+            ProjectUri = 'https://github.com/Passy121/PSGetInternal'
 
             # A URL to an icon representing this module.
             # IconUri = ''
