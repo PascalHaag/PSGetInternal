@@ -41,7 +41,7 @@
 
 		[ValidateSet('Trusted', 'Untrusted')]
 		[string]
-		$InstallationPolicy
+		$InstallationPolicy = 'Trusted'
 	)
 	process {
 		$existingRepo = Get-PSRepository -Name $Name -ErrorAction Ignore
