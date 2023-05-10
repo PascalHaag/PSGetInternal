@@ -49,6 +49,10 @@
 		$Scope = 'CurrentUser'
 	)
 	begin{
+		if(-not $Script:Config){
+			throw "Internal PSGallery not configured! Use Set-GIRepository to set up an internal Repository."
+		}
+		
 		$param = @{
 			Repository = $Script:Config.Name
 			Name = $Name

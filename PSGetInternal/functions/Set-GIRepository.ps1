@@ -24,14 +24,18 @@
 	Will register the trusted repository "Contoso-Repository" with SourceLocation "https://pkgs.dev.azure.com/contosoINF/_packaging/InfernalAccounting/nuget/v2".
 	And will generate a config and credential file.
 	#>
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions','')]
 	[CmdletBinding()]
 	Param (
+		[Parameter(Mandatory)]
 		[string]
 		$Name,
 
+		[Parameter(Mandatory)]
 		[uri]
 		$SourceLocation,
 
+		[Parameter(Mandatory)]
 		[pscredential]
 		$Credential,
 
@@ -71,6 +75,6 @@
 		}
 		$repoFile = Join-Path $Script:configPath "config.clixml"
 		$repository | Export-Clixml -Path $repoFile -Force
-		$Script:Config = $repository	
+		$Script:Config = $repository
 	}
 }
