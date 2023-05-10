@@ -43,7 +43,7 @@ Install-GIModule -Name "<Internal-ModuleName>"
 2. Download bootstrap.ps1 from GitHub repository and store it on the network share.
 3. Perform the following command in PowerShell from a computer with access to both that network share and the PSGallery:
     
-> Be aware that "<network share path>" should be the same path, where the bootstrap script is stored!
+> Be aware that "&lt;network share path&gt;" should be the same path, where the bootstrap script is stored!
 
 ```powershell
 # Save the module "PSGetInternal" to "<network share path>".
