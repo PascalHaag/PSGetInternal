@@ -51,5 +51,5 @@ Save-Module -Name "PSGetInternal" -Path "<network share path>" -Repository "PSGa
 ```
     
 4. Edit the bootstrap script to your internal repository. Add your personal default settings under the first paramblock:
-    $RepositoryName = "<Name of the internal Repository>"
-    $Url = "<Url of the internal Repository>"
+    $RepositoryName = "&lt;Name of the internal Repository&gt;"
+    $Url = "&lt;Url of the internal Repository&gt;"
