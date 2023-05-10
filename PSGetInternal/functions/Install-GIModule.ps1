@@ -26,7 +26,7 @@
 		[pscredential]
 		$Credential = (Get-RepoCredential),
 
-		[swtich]
+		[switch]
 		$Force,
 
 		[switch]
