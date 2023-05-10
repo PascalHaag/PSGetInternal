@@ -1,4 +1,4 @@
-﻿$Script:ConfigPath = Join-Path $env:LOCALAPPDATA "PowerShell\PSGetInternal"  
+﻿$Script:ConfigPath = Join-Path $env:LOCALAPPDATA "PowerShell\PSGetInternal"
 $packagePath = Join-Path $env:LOCALAPPDATA "PackageManagement\ProviderAssemblies\nuget\2.8.5.208\Microsoft.PackageManagement.NuGetProvider.dll"
 
 if(-not (Test-Path -Path $packagePath)){

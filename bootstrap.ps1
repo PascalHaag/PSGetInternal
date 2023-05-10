@@ -71,7 +71,7 @@ function Get-NugetCred {
     
     How to generate and get the the PAT, see following documentation:
     https://learn.microsoft.com/en-us/azure/devops/organizations/accounts/use-personal-access-tokens-to-authenticate?view=azure-devops&tabs=Windows
-    Expiration (UTC) should be 'Custom defined' : 'One year after today' (use date-picker to select the latest possible day)  
+    Expiration (UTC) should be 'Custom defined' : 'One year after today' (use date-picker to select the latest possible day)
     Scopes need to be 'Custom defined' : 'Packaging > Read'
     
     Use the Company Internal user principal name (MusterM1@contoso.com) as 'User'"
