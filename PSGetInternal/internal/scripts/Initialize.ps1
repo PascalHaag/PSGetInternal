@@ -9,5 +9,6 @@ if(-not (Test-Path -Path $packagePath)){
 if(-not (Test-Path -Path $Script:ConfigPath)){
     $null = New-Item -ItemType Directory -Path $Script:ConfigPath -Force
 }
-
-$script:config = Import-Clixml -Path (Join-Path $Script:ConfigPath 'config.clixml') -ErrorAction Ignore
+if(Test-Path -Path (Join-Path $Script:ConfigPath 'config.clixml')){
+    $script:config = Import-Clixml -Path (Join-Path $Script:ConfigPath 'config.clixml') -ErrorAction Ignore
+}

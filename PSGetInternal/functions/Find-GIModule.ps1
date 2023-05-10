@@ -30,6 +30,11 @@
 		[pscredential]
 		$Credential = (Get-RepoCredential)
 	)
+	begin{
+		if(-not $Script:Config){
+			throw "Internal PSGallery not configured! Use Set-GIRepository to set up an internal Repository."
+		}
+	}
 	process {
 		Find-Module -Repository $Script:Config.Name -Name $Name -Credential $Credential
 	}

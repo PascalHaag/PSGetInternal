@@ -26,12 +26,15 @@
 	#>
 	[CmdletBinding()]
 	Param (
+		[Parameter(Mandatory)]
 		[string]
 		$Name,
 
+		[Parameter(Mandatory)]
 		[uri]
 		$SourceLocation,
 
+		[Parameter(Mandatory)]
 		[pscredential]
 		$Credential,
 
