@@ -50,6 +50,7 @@
 
 	Will update the module "Company-Module" from the configured Company-Internal repository.
 	#>
+    [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions','')]
 	[CmdletBinding()]
 	Param (
 		[Parameter(Mandatory = $true)]
