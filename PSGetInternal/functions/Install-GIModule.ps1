@@ -32,7 +32,7 @@
 		[switch]
 		$AllowClobber,
 
-		[swtich]
+		[switch]
 		$AllowPrerelease,
 
 		[string]
