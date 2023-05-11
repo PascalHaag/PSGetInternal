@@ -73,11 +73,8 @@
 		$MaximumVersion,
 
 		[string]
-		$RequiredVersion,
+		$RequiredVersion
 
-		[ValidateSet('AllUsers', 'CurrentUser')]
-		[string]
-		$Scope = 'CurrentUser'
 	)
 	begin {
 		if (-not $Script:Config) {
@@ -85,10 +82,8 @@
 		}
 		
 		$param = @{
-			Repository = $Script:Config.Name
 			Name       = $Name
 			Credential = $Credential
-			Scope      = $Scope
 		}
 		if ($Force) { $param.Force = $Force }
 		if ($AllowClobber) { $param.AllowClobber = $AllowClobber }
