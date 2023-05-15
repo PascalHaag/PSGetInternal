@@ -56,10 +56,11 @@
 		}else{
 			if (($existingRepo.SourceLocation -ne $SourceLocation) -or ($existingRepo.InstallationPolicy -ne $InstallationPolicy)) {
 				try {
+					Unregister-PSRepository -Name $Name -ErrorAction Stop
 					Set-PSRepository -Name $Name -SourceLocation $SourceLocation -InstallationPolicy $InstallationPolicy -Credential $Credential -ErrorAction Stop
 				}
 				catch {
-					Write-Warning -Message "Error setting up Company-Internal Repository: $_"
+					Write-Warning -Message "Error to update Company-Internal Repository: $_"
 					return
 				}
 			}
