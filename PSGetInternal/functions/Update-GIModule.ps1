@@ -8,6 +8,9 @@
 	
 	.PARAMETER Name
 	Name of the module.
+
+	.PARAMETER RepositoryName
+	Name of the repository.
 	
 	.PARAMETER Credential
 	Credential to get access to the configured Company-Internal repository.
@@ -49,6 +52,11 @@
 	PS C:\> Update-GIModule -Name "Company-Module"
 
 	Will update the module "Company-Module" from the configured Company-Internal repository.
+
+	.EXAMPLE
+	PS C:\> Update-GIModule -Name "Company-Module" -RepositoryName "Company-Repository"
+
+	Will update the module "Company-Module" from the "Company-Internal" repository.
 	#>
     [Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions','')]
 	[CmdletBinding()]
@@ -57,9 +65,14 @@
 		[string]
 		$Name,
 
-		[pscredential]
-		$Credential = (Get-RepoCredential),
+		[ArgumentCompleter({ Get-RepoNameCompletion $args })]
+		[ValidateScript({ Assert-RepoName -Name $_ })]
+		[string]
+		$RepositoryName,
 
+		[pscredential]
+		$Credential = (Get-RepoCredential -RepositoryName $RepositoryName),
+	
 		[switch]
 		$Force,
 
@@ -77,13 +90,10 @@
 
 	)
 	begin {
-		if (-not $Script:Config) {
-			throw "Internal PSGallery not configured! Use Set-GIRepository to set up an internal Repository."
-		}
-		
 		$param = @{
 			Name       = $Name
 			Credential = $Credential
+			Repository = $RepositoryName
 		}
 		if ($Force) { $param.Force = $Force }
 		if ($AllowClobber) { $param.AllowClobber = $AllowClobber }
@@ -92,6 +102,6 @@
 		if ($RequiredVersion) { $param.RequiredVersion = $RequiredVersion }
 	}
 	process {
-		Update-Module @param
+		Update-PSResource @param
 	}
 }

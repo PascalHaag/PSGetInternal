@@ -64,7 +64,7 @@ Remove-Item -Path "$($publishDir.FullName)\PSGetInternal\functions" -Recurse -Fo
 if ($AutoVersion)
 {
 	Write-Host  "Updating module version numbers."
-	try { [version]$remoteVersion = (Find-Module 'PSGetInternal' -Repository $Repository -ErrorAction Stop).Version }
+	try { [version]$remoteVersion = (Find-PSResource 'PSGetInternal' -Repository $Repository -ErrorAction Stop).Version }
 	catch
 	{
 		throw "Failed to access $($Repository) : $_"
@@ -75,7 +75,7 @@ if ($AutoVersion)
 	}
 	$newBuildNumber = $remoteVersion.Build + 1
 	[version]$localVersion = (Import-PowerShellDataFile -Path "$($publishDir.FullName)\PSGetInternal\PSGetInternal.psd1").ModuleVersion
-	Update-ModuleManifest -Path "$($publishDir.FullName)\PSGetInternal\PSGetInternal.psd1" -ModuleVersion "$($localVersion.Major).$($localVersion.Minor).$($newBuildNumber)"
+	Update-PSResourceManifest -Path "$($publishDir.FullName)\PSGetInternal\PSGetInternal.psd1" -ModuleVersion "$($localVersion.Major).$($localVersion.Minor).$($newBuildNumber)"
 }
 #endregion Updating the Module Version
 

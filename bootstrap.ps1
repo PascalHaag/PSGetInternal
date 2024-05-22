@@ -98,10 +98,20 @@ function Install-NugetTools {
         throw "Please install the module 'PSGetInternal' and store this script in the same folder"
     }
 
-    $modulesRoot = $env:PSModulePath -split ';' | Where-Object { $_ -match 'documents' } | Select-Object -First 1
+    $modulesRoot = $env:PSModulePath -split ';' | Where-Object { $_ -match 'documents|users' } | Select-Object -First 1
+	Copy-Item -Path "$($PSScriptRoot)\PSGetInternal" -Destination $modulesRoot -Force -Recurse
 
-    Copy-Item -Path "$($PSScriptRoot)\PSGetInternal" -Destination $modulesRoot -Force -Recurse
-    
+	$psResourceModule = Get-Module -Name Microsoft.PowerShell.PSResourceGet -ListAvailable | Sort-Object -Descending Version | Select-Object -First 1
+
+	$bootstrapGetVersion = Get-Item -Path "$($PSScriptRoot)\Microsoft.PowerShell.PSResourceGet\*\Microsoft.PowerShell.PSResourceGet.psd1" | ForEach-Object {
+		(Import-PowerShellDataFile -LiteralPath $_.FullName).ModuleVersion -as [version]
+	} | Sort-Object -Descending | Select-Object -First 1
+	
+	if($bootstrapGetVersion -lt $psResourceModule.Version){
+		return
+	}
+
+	Copy-Item -Path "$($PSScriptRoot)\Microsoft.PowerShell.PSResourceGet" -Destination $modulesRoot -Force -Recurse
 }
 
 #endregion functions

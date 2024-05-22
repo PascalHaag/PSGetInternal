@@ -13,9 +13,18 @@
     #>
     [OutputType([pscredential])]
     [CmdletBinding()]
-    param()
+    param(
+		[Parameter(Mandatory)]
+		$RepositoryName
+	)
 
-    $credFilePath = Join-Path $Script:ConfigPath "RepoCred.clixml"
+
+    $credFilePath = Join-Path $Script:ConfigPath "$($RepositoryName)_RepoCred.clixml"
+
+	if(-not (Test-Path -Path $credFilePath)){
+		Write-Verbose "No existing credential file for $($RepositoryName)."
+		return
+	}
 
     Import-Clixml $credFilePath
 }

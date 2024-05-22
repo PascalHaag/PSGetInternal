@@ -9,7 +9,7 @@
 	.PARAMETER Name
 	Name of repository which should be registered.
 	
-	.PARAMETER SourceLocation
+	.PARAMETER Uri
 	URL of the repository, which should be registered.
 	
 	.PARAMETER Credential
@@ -19,21 +19,22 @@
 	Parameter to trust or untrust the source of the repository.
 	
 	.EXAMPLE
-	PS C:\> Set-GIRepository -Name "Contoso-Repository" -SourceLocation "https://pkgs.dev.azure.com/contosoINF/_packaging/InfernalAccounting/nuget/v2" -InstallationPolicy Trusted -Credential $cred
+	PS C:\> Set-GIRepository -Name "Company-Repository" -Uri "https://pkgs.dev.azure.com/contosoINF/_packaging/InfernalAccounting/nuget/v2" -InstallationPolicy Trusted -Credential $cred
 	
-	Will register the trusted repository "Contoso-Repository" with SourceLocation "https://pkgs.dev.azure.com/contosoINF/_packaging/InfernalAccounting/nuget/v2".
+	Will register the trusted repository "Company-Repository" with Uri "https://pkgs.dev.azure.com/contosoINF/_packaging/InfernalAccounting/nuget/v2".
 	And will generate a config and credential file.
 	#>
-	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions','')]
+	[Diagnostics.CodeAnalysis.SuppressMessageAttribute('PSUseShouldProcessForStateChangingFunctions', '')]
 	[CmdletBinding()]
 	Param (
 		[Parameter(Mandatory)]
 		[string]
 		$Name,
 
+		[Alias('SourceLocation')]
 		[Parameter(Mandatory)]
 		[uri]
-		$SourceLocation,
+		$Uri,
 
 		[Parameter(Mandatory)]
 		[pscredential]
@@ -41,23 +42,27 @@
 
 		[ValidateSet('Trusted', 'Untrusted')]
 		[string]
-		$InstallationPolicy = 'Trusted'
+		$InstallationPolicy = 'Trusted',
+
+		[switch]
+		$Default
 	)
 	process {
-		$existingRepo = Get-PSRepository -Name $Name -ErrorAction Ignore
+		$existingRepo = Get-PSResourceRepository -Name $Name -ErrorAction Ignore
 		if (-not $existingRepo) {
 			try {
-				Register-PSRepository -Name $Name -SourceLocation $SourceLocation -InstallationPolicy $InstallationPolicy -Credential $Credential -ErrorAction Stop
+				Register-PSResourceRepository -Name $Name -Uri $Uri -Trusted:$($InstallationPolicy -eq "Trusted") -ErrorAction Stop
 			}
 			catch {
 				Write-Warning -Message "Error register Company-Internal Repository: $_"
 				return
 			}
-		}else{
-			if (($existingRepo.SourceLocation -ne $SourceLocation) -or ($existingRepo.InstallationPolicy -ne $InstallationPolicy)) {
+		}
+		else {
+			if (($existingRepo.Uri -ne $Uri) -or ($existingRepo.Trusted -ne ($InstallationPolicy -eq "Trusted"))) {
 				try {
-					Unregister-PSRepository -Name $Name -ErrorAction Stop
-					Set-PSRepository -Name $Name -SourceLocation $SourceLocation -InstallationPolicy $InstallationPolicy -Credential $Credential -ErrorAction Stop
+					Unregister-PSResourceRepository -Name $Name -ErrorAction Stop
+					Register-PSResourceRepository -Name $Name -Uri $Uri -Trusted:$($InstallationPolicy -eq "Trusted") -ErrorAction Stop
 				}
 				catch {
 					Write-Warning -Message "Error to update Company-Internal Repository: $_"
@@ -65,17 +70,12 @@
 				}
 			}
 		}
-		
-		$credFile = Join-Path $Script:configPath "RepoCred.clixml"
-		$Credential | Export-Clixml -Path $credFile -Force
 
-		$repository = [PSCustomObject]@{
-			Name               = $Name
-			SourceLocation     = $SourceLocation
-			InstallationPolicy = $InstallationPolicy
+		Set-GIRepoCredential -RepositoryName $Name -Credential $Credential
+		
+		if ($Default) {
+			$defaultRepoFile = Join-Path $Script:configPath "DefaultRepo.clixml"
+			$Name | Export-Clixml -Path $defaultRepoFile -Force
 		}
-		$repoFile = Join-Path $Script:configPath "config.clixml"
-		$repository | Export-Clixml -Path $repoFile -Force
-		$Script:Config = $repository
 	}
 }

@@ -4,7 +4,7 @@
     RootModule        = 'PSGetInternal.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '1.0.6'
+    ModuleVersion     = '2.0.0'
 
     # Supported PSEditions
     # CompatiblePSEditions = @()
@@ -25,7 +25,7 @@
     Description       = 'PowerShell GetInternal Module'
 
     # Minimum version of the PowerShell engine required by this module
-    # PowerShellVersion = ''
+    # PowerShellVersion = '7.4' (Microsoft.PowerShell.PSResourceGet installed per default on this version)
 
     # Name of the PowerShell host required by this module
     # PowerShellHostName = ''
@@ -43,7 +43,9 @@
     # ProcessorArchitecture = ''
 
     # Modules that must be imported into the global environment prior to importing this module
-    # RequiredModules = @()
+    RequiredModules = @(
+		'Microsoft.PowerShell.PSResourceGet'
+	)
 
     # Assemblies that must be loaded prior to importing this module
     # RequiredAssemblies = @()
@@ -65,6 +67,7 @@
         'Find-GIModule'
         'Install-GIModule'
         'Save-GIModule'
+		'Set-GIRepoCredential'
         'Set-GIRepository'
         'Update-GIModule'
     )

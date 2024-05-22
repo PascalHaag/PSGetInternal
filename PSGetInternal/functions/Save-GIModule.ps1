@@ -11,6 +11,9 @@
 	
 	.PARAMETER Path
 	Path where the module should be saved.
+
+	.PARAMETER RepositoryName
+	Name of the repository.
 	
 	.PARAMETER Credential
 	Credential to get access to the configured Company-Internal repository.
@@ -18,7 +21,7 @@
 	.EXAMPLE
 	PS C:\> Save-GIModule -Name "Company-Module" -Path .
 
-	Will save the module "Company-Module" from the configured Company-Internal repository to the current path.
+	Will save the module "Company-Module" from the default configured Company-Internal repository to the current path.
 	#>
 	[CmdletBinding()]
 	Param (
@@ -30,10 +33,15 @@
 		[string]
 		$Path,
 
+		[ArgumentCompleter({ Get-RepoNameCompletion $args })]
+		[ValidateScript({ Assert-RepoName -Name $_ })]
+		[string]
+		$RepositoryName = (Get-DefaultRepo),
+
 		[pscredential]
-		$Credential = (Get-RepoCredential)
+		$Credential = (Get-RepoCredential -RepositoryName $RepositoryName)		
 	)
 	process {
-		Save-Module -Repository $Script:Config.Name -Name $Name -Credential $Credential -Path $Path
+		Save-PSResource -Repository $RepositoryName -Name $Name -Credential $Credential -Path $Path
 	}
 }
