@@ -15,7 +15,7 @@ The module itself and the related function will be used to call the internal rep
 To use this module directly, you need to install it from the PowerShell Gallery:
 
 ```powershell
-Install-Module PSGetInternal -Scope CurrentUser
+Install-PSResource PSGetInternal -Scope CurrentUser
 ```
 
 Alternatively, you may want to deploy it via bootstrap script to solve the fundamental chicken/egg problem of deploying the tools to deploy tools.
@@ -27,9 +27,15 @@ Only use one time to register the repository.
 Is not needed, if bootstrap got used.
 
 ```powershell
-# Register the trusted repository "Internal-Repository" with SourceLocation "<Repository-URL>". And generate a config and credential file.
+# Register the trusted repository "Internal-Repository" with SourceLocation "<Repository-URL>". Generate a credential file for this repository.
 $cred = Get-Credential -UserName "<UserPrincipalName>" -Message "Provide PAT used to authenticate to the internal PowerShell Gallery"
 Set-GIRepository -Name "Internal-Repository" -SourceLocation "<Repository-URL>" -InstallationPolicy "Trusted" -Credential $cred
+```
+
+```powershell
+# Register the trusted repository "Internal-Repository" with SourceLocation "<Repository-URL>". Generate a credential file for this repository and mark it as default.
+$cred = Get-Credential -UserName "<UserPrincipalName>" -Message "Provide PAT used to authenticate to the internal PowerShell Gallery"
+Set-GIRepository -Name "Internal-Repository" -SourceLocation "<Repository-URL>" -InstallationPolicy "Trusted" -Credential $cred -Default
 ```
 
 ```powershell
@@ -47,7 +53,7 @@ Install-GIModule -Name "<Internal-ModuleName>"
 
 ```powershell
 # Save the module "PSGetInternal" to "<network share path>".
-Save-Module -Name "PSGetInternal" -Path "<network share path>" -Repository "PSGallery"
+Save-PSResource -Name "PSGetInternal" -Path "<network share path>" -Repository "PSGallery"
 ```
     
 4. Edit the bootstrap script to your internal repository. Add your personal default settings under the first paramblock:

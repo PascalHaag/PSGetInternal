@@ -9,6 +9,9 @@
 	.PARAMETER Name
 	Name of the module.
 	
+	.PARAMETER RepositoryName
+	Name of the repository.
+	
 	.PARAMETER Credential
 	Credential to get access to the configured Company-Internal repository.
 
@@ -56,7 +59,12 @@
 	.EXAMPLE
 	PS C:\> Install-GIModule -Name "Company-Module"
 
-	Will install the module "Company-Module" from the configured Company-Internal repository.
+	Will install the module "Company-Module" from the default configured Company-Internal repository.
+
+	.EXAMPLE
+	PS C:\> Install-GIModule -Name "Company-Module" -RepositoryName "Company-Repository"
+
+	Will install the module "Company-Module" from the "Company-Repository" repository.
 	#>
 	[CmdletBinding()]
 	Param (
@@ -64,8 +72,13 @@
 		[string]
 		$Name,
 
+		[ArgumentCompleter({ Get-RepoNameCompletion $args })]
+		[ValidateScript({ Assert-RepoName -Name $_ })]
+		[string]
+		$RepositoryName = (Get-DefaultRepo),
+
 		[pscredential]
-		$Credential = (Get-RepoCredential),
+		$Credential = (Get-RepoCredential -RepositoryName $RepositoryName),
 
 		[switch]
 		$Force,
@@ -90,12 +103,9 @@
 		$Scope = 'CurrentUser'
 	)
 	begin {
-		if (-not $Script:Config) {
-			throw "Internal PSGallery not configured! Use Set-GIRepository to set up an internal Repository."
-		}
-		
+				
 		$param = @{
-			Repository = $Script:Config.Name
+			Repository = $RepositoryName
 			Name       = $Name
 			Credential = $Credential
 			Scope      = $Scope
@@ -108,6 +118,6 @@
 		if ($RequiredVersion) { $param.RequiredVersion = $RequiredVersion }
 	}
 	process {
-		Install-Module @param
+		Install-PSResource @param
 	}
 }
